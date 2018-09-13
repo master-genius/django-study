@@ -1,0 +1,69 @@
+{% include 'header.html'  %}
+<div class="grid-x">
+    <div class="cell small-1 medium-2 large-3">
+        &nbsp;
+    </div>
+    <div class="cell small-10 medium-8 large-6">
+        <form onsubmit="return false;" method="post">
+            {% csrf_token %}
+            <label>Username</label>
+            <input type="text" id="username" value="" required>
+
+            <label for="">Email</label>
+            <input type="text" id="email" value="" required>
+
+            <label>Password</label>
+            <input type="password" id="passwd" value="" required>
+
+            <label>Password Again</label>
+            <input type="password" id="passwd-again" value="" required>
+
+            <input type="submit" value="Register" class="button hollow alert small" onclick="register()">
+        </form>
+        <p class="help-text" id="help-text">
+
+        </p>
+    </div>
+    <div class="cell small-1 medium-2 large-3">
+        &nbsp;
+    </div>
+</div>
+<script>
+    function register() {
+        brutal.autod('#help-text','');
+        var user = {
+            csrfmiddlewaretoken:document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            username : document.getElementById('username').value,
+            passwd : document.getElementById('passwd').value,
+            email : document.getElementById('email').value,
+            repasswd : document.getElementById('passwd-again').value
+        };
+
+        if (user.username ==''
+            || user.passwd == ''
+            || user.repasswd == ''
+        ) {
+            brutal.autod('#help-text','wrong');
+            return ;
+        }
+
+        if (user.passwd !== user.repasswd) {
+            brutal.autod('#help-text', 'The two password is inconsistent.');
+            return ;
+        }
+
+        aj_post({
+            url:'/user/runregister/',
+            data:brutal.jsontodata(user),
+            success:function(xr) {
+                if (xr.status == 0) {
+                    location.href = '/addnews';
+                } else {
+                    brutal.autod('#help-text', xr.info);
+                }
+            }
+        })
+
+    }
+</script>
+{% include 'footer.html' %}

@@ -1,0 +1,33 @@
+{% include 'header.html'  %}
+<div class="grid-x">
+    <div class="cell small-1 medium-2 large-3">
+        &nbsp;
+    </div>
+    <div class="cell small-10 medium-8 large-6">
+        <form action="/user/runlogin/" method="post">
+            {% csrf_token %}
+            <label>Username</label>
+            <input type="text" name="username" value="">
+
+            <label>Password</label>
+            <input type="password" name="passwd" value="">
+
+            <input type="submit" value="Login" class="button hollow alert small">
+            &nbsp; &nbsp;
+            
+        </form>
+        <button class="button small info hollow" onclick="show_register()">
+                register
+            </button>
+    </div>
+    <div class="cell small-1 medium-2 large-3">
+        &nbsp;
+    </div>
+</div>
+<script>
+    function show_register() {
+        location.href = '/user/register';
+    }
+</script>
+
+{% include 'footer.html' %}

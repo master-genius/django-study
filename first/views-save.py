@@ -9,31 +9,19 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 import time
 from .models import *
 
-class IndexView(View): 
-    def dispatch(self, req, *args, **argv):
-        ret = super(IndexView, self).dispatch(req, *args, **argv)
-        return ret
-
-    def get(self, req):
-        pass
-
-    def post(self, req):
-        pass
-
-class NewsView(IndexView):
-    def dispatch(self, req, *args, **argv):
-        ret = super(NewsView, self).dispatch(req, *args, **argv)
-        return ret
-
-    def get(self, req):
-        return HttpResponse('index')
-
-    def post(self, req):
-        return HttpResponse('post')
-
-
 def index(req):
-    return render(req, 'index.html')
+    return HttpResponse(time.ctime())
+
+def req_test(req):
+    info = {
+        'method' : req.method,
+        'encoding' : req.encoding,
+        'pathinfo' : req.path_info,
+        'content_type' : req.content_type,
+        'remote_addr' : req.META['REMOTE_ADDR'],
+        'get_params' : req.META['QUERY_STRING'],
+    }
+    return JsonResponse(info)
 
 def show_login(req):
     return render(req, 'login.html')
@@ -148,4 +136,76 @@ def show_news(req, news_id):
         return render(req, '404.html')
 
     return render(req, 'show_news.html', news_info)
+
+
+class NewsView(View):
+    def __init__(self, ):
+        self.route = ''
+        self.route_get_dict = {
+            'show':self.ShowNews,
+            'newslist':self.NewsList,
+        }
+        
+        self.route_post_dict = {
+            'addnews':self.AddNews,
+            'updnews':self.UpdateNews,
+        }
+
+    def get_route(self, req):
+        url_list = req.path_info.strip('/').split('/')
+        if len(url_list) > 1:
+            self.route = url_list[1]
+        print(self.route)
+
+    def dispatch(self, req, *args, **argv):
+        self.get_route(req)
+        ret = super(NewsView, self).dispatch(req, *args, **argv)
+        return ret
+    
+    def get(self, req):
+        try:
+            return self.route_get_dict[self.route](req)
+        except KeyError as e:
+            return JsonResponse({
+                    'status':-1,'errinfo':'not found'
+                   })
+
+    def post(self, req):
+        try:
+            return self.route_post_dict[self.route](req)
+        except KeyError as e:
+            return JsonResponse({
+                    'status':-1, 'errinfo':'post not found' 
+                   })
+
+    def NewsList(self, req):
+        nlist = News.objects.order_by('-create_time').values('id','news_title')
+        return JsonResponse([n for n in nlist],safe=False)
+
+    def ShowNews(self, req):
+        pass
+
+
+    def AddNews(self, req):
+        pass
+
+    def UpdateNews(self, req):
+        pass
+
+
+
+'''
+class Test(View):
+    def dispatch(self, req, *args, **argv):
+        ret = super(Test, self).dispatch(req, *args, **argv)
+        return ret
+
+    def get(self, req):
+        return HttpResponse(
+                    ' '.join([req.method, time.ctime()])
+               )
+
+    def post(self, req):
+        return HttpResponse('post')
+'''
 

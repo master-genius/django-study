@@ -1,4 +1,5 @@
-import json as myjson
+
+#import json as myjson
 from django.shortcuts import render
 from django.views import View
 from django.http.response import HttpResponse,JsonResponse
@@ -8,10 +9,20 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import PermissionRequiredMixin
 import time
 from .models import *
+import os
 
-class IndexView(View): 
+
+class RootView(View):
+    def __init__(self,):
+        self.page_vars = {
+            'user_info_cell':'<a href="/user/login/">Login</a>'
+        }
+
     def dispatch(self, req, *args, **argv):
-        ret = super(IndexView, self).dispatch(req, *args, **argv)
+        if req.user.is_authenticated:
+            self.page_vars['user_info_cell'] = req.session['username']
+
+        ret = super(RootView, self).dispatch(req, *args, **argv)
         return ret
 
     def get(self, req):
@@ -20,13 +31,64 @@ class IndexView(View):
     def post(self, req):
         pass
 
-class NewsView(IndexView):
+
+class IndexView(RootView):
+    def dispatch(self, req, *args, **argv):
+        #print(dir(req.session))
+        print("fuck")
+        print(self.page_vars)
+        print('shit')
+        ret = super(IndexView, self).dispatch(req, *args, **argv)
+        return ret
+
+    def get(self, req):
+        return render(req, 'index.html', self.page_vars)
+
+    def post(self, req):
+        pass
+
+class NewsCellView(RootView):
+    def dispatch(self, req, *args, **argv):
+        ret = super(NewsCellView, self).dispatch(req, *args, **argv)
+        return ret
+
+    def get(self, req):
+        return render(req, 'index.html', self.page_vars)
+
+    def post(self, req):
+        return HttpResponse('post')
+
+class NewsView(RootView):
     def dispatch(self, req, *args, **argv):
         ret = super(NewsView, self).dispatch(req, *args, **argv)
         return ret
 
     def get(self, req):
         return HttpResponse('index')
+
+    def post(self, req):
+        return HttpResponse('post')
+
+
+class LoginView(RootView):
+    def dispatch(self, req, *args, **argv):
+        ret = super(LoginView, self).dispatch(req, *args, **argv)
+        return ret
+
+    def get(self, req):
+        return render(req, 'login.html', self.page_vars)
+
+    def post(self, req):
+        return HttpResponse('post')
+
+
+class RegisterView(RootView):
+    def dispatch(self, req, *args, **argv):
+        ret = super(LoginView, self).dispatch(req, *args, **argv)
+        return ret
+
+    def get(self, req):
+        return render(req, 'register.html', self.page_vars)
 
     def post(self, req):
         return HttpResponse('post')
@@ -40,6 +102,9 @@ def show_login(req):
 
 def show_register(req):
     return render(req, 'register.html')
+
+def newscell(req):
+    return render(req, 'newscell.html')
 
 def runregister(req):
     username = req.POST['username']
@@ -63,6 +128,8 @@ def runlogin(req):
     passwd = req.POST['passwd']
     u = authenticate(req, username=username, password=passwd)
     if u is not None:
+        req.session['user_id'] = u.id
+        req.session['username'] = u.username
         login(req, u)
         return JsonResponse({
             'status':0,

@@ -34,3 +34,8 @@ class News(models.Model):
             return False
 
         return news_info
+
+class Tags(models.Model):
+    id = models.AutoField(primary_key = True)
+    tag_name = models.CharField(max_length=100)
+    parent_id = models.IntegerField()

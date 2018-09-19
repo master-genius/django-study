@@ -6,16 +6,77 @@
         <title>
             {% if page_title %}{{ page_title }}{% endif %}
         </title>
-        <link href="/static/css/fdxy.min.css" rel="stylesheet" type="text/css">
-        <script src="/static/js/raj.js"></script>
-        <script src="/static/js/brutal_1804.js"></script>
+        <link href="http://localhost:8008/css/fdxy.min.css" rel="stylesheet" type="text/css">
+        <script src="http://localhost:8008/js/raj.js"></script>
+        <script src="http://localhost:8008/js/brutal_1804.js"></script>
         <style>
             .container {
                 width:100%;
                 word-break:break-all;
             }
+
+            .top-bar{
+                line-height: 3.6rem;
+                background-color: #ffffff;
+                color: #4a4a4a;
+                border-bottom: solid 0.05rem #432456;
+                font-size: 108%;
+                margin:auto;
+                width:73%;
+            }
+
+            .top-bar a {
+                color: #4a5c5c;
+            }
+
+            .top-bar-menu {
+                width:70%;
+                float:left;
+            }
+
+            .top-bar-user{
+                width:30%;
+                float:right;
+            }
+
+            a {
+                color: #234567;
+            }
         </style>
     </head>
+    <div class="container top-bar">
+        <!-- <div class="grid-x">
+            <div class="cell small-7 medium-8 large-8">
+                <ul class="menu" style="background-color: #ffffff;">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li>
+                        <a href="/newscell">NewsList</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="cell small-5 medium-4 large-4" id="global-user-cell">
+                {% autoescape off %}
+                    {{ user_info_cell }}
+                {% endautoescape %}
+            </div>
+        </div> -->
+        <div class="top-bar-menu">
+            <ul class="menu" style="background-color: #ffffff;">
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/newscell">NewsList</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="top-bar-user">
+            {% autoescape off %}
+                {{ user_info_cell }}
+            {% endautoescape %}
+        </div>
+    </div>
     <div class="container">
-
-

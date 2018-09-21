@@ -28,6 +28,7 @@
         var user = {
             username:brutal.autod('#username'),
             passwd:brutal.autod('#passwd'),
+            redirect:location.href.pathname,
             csrfmiddlewaretoken:document.getElementsByName('csrfmiddlewaretoken')[0].value
         }
         aj_post({
@@ -35,7 +36,11 @@
             data:brutal.jsontodata(user),
             success:function(xr) {
                 if (xr.status == 0) {
-                    location.href = '/';
+                    if (xr.redirect) {
+                        location.href = xr.redirect;
+                    } else {
+                        location.href = '/';
+                    }
                 } else {
                     brutal.autod('#login-tip', 'username os password is wrong');
                 }

@@ -7,8 +7,10 @@
             {% if page_title %}{{ page_title }}{% endif %}
         </title>
         <link href="http://localhost:8008/css/fdxy.min.css" rel="stylesheet" type="text/css">
+        <link href="http://localhost:8008/css/component.css" rel="stylesheet" type="text/css">
         <script src="http://localhost:8008/js/raj.js"></script>
         <script src="http://localhost:8008/js/brutal_1804.js"></script>
+        <script src="http://localhost:8008/js/comp.js"></script>
         <style>
             .container {
                 width:100%;
@@ -43,6 +45,36 @@
                 color: #234567;
             }
         </style>
+        <script>
+            var _user_info_block_status = 0;
+
+            function show_user_block() {
+                var nid = 'user-top-block';
+                if (_user_info_block_status == 0) {
+                    var html = `
+                        <a href="javascript:logout();" style="color:#efefef;">
+                            Logout
+                        </a>
+                    `;
+                    top_block_show(nid, html, 'small-top-block');
+                    _user_info_block_status = 1;
+                } else {
+                    top_block_reset(nid);
+                    _user_info_block_status = 0;
+                }
+
+            }
+
+            function logout() {
+                aj_get({
+                    url:'/user/logout/',
+                    success:function(xr) {
+                        location.href = "/user/login";
+                    }
+                });
+            }
+
+        </script>
     </head>
     <div class="container top-bar">
         <!-- <div class="grid-x">
@@ -68,7 +100,10 @@
                     <a href="/">Home</a>
                 </li>
                 <li>
-                    <a href="/newscell">NewsList</a>
+                    <a href="/newslist">NewsList</a>
+                </li>
+                <li>
+                    <a href="/addnews">AddNews</a>
                 </li>
             </ul>
         </div>

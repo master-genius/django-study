@@ -1,0 +1,10 @@
+.small-top-block {
+    width: 16%;
+    z-index : 100;
+    position: fixed;
+    color:#ffffff;
+    background-color: rgba(12, 23, 23, 0.8);
+    margin-left: 1.2%;
+    text-align: center;
+}
+

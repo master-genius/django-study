@@ -11,6 +11,17 @@ import time
 from .models import *
 import os
 
+class UserPermissionAuth(LoginRequireMixin):
+    def dispatch(self, req, *args, **kwargs):
+        if req.user.is_authenticated:
+            self.auth_type_perm(req)
+        else:
+            return super().dispatch(req, *args, **kwargs)
+
+
+    def auth_type_perm(self, req):
+        
+
 
 class RootView(View):
     def __init__(self,):
@@ -63,7 +74,7 @@ class NewsListView(RootView):
     def post(self, req):
         return HttpResponse('post')
 
-class NewsAdd(LoginRequiredMixin,RootView):
+class NewsAdd(UserPermissionAuth,RootView):
     login_url = '/user/login/'
     def dispatch(self, req, *args, **argv):
         ret = super(NewsAdd, self).dispatch(req, *args, **argv)

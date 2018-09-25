@@ -20,7 +20,6 @@ class RootView(View):
 
     def dispatch(self, req, *args, **argv):
         if req.user.is_authenticated:
-
             self.page_vars['user_info_cell'] = ''.join([
                     '<div id="user-info-block">',
                         '<a href="javascript:show_user_block();">',
